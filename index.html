@@ -16,27 +16,48 @@ $(document).ready(function(){
     var tmpb;
     var maxlen=0;
     var words = this.value.split(/\W+/);
+    var binarr=[];
     for (var i = 0; i <= words.length - 1; i++) {
       words[i] += " ";
-      encoded = encoded + i +": " + iWords.indexOf(words[i].trim().toLowerCase()) + " " ;
-      tmpb = iWords.indexOf(words[i].trim().toLowerCase()).toString(2) ;
-      if (tmpb.length > maxlen ) { maxlen = tmpb.length ; }
-      encodedb = encodedb + i +": " + tmpb + " ";
+      binarr[i] = iWords.indexOf(words[i].trim().toLowerCase()).toString(2) ;
+      encoded = encoded + i +":" + iWords.indexOf(words[i].trim().toLowerCase()) + " " ;
+      encodedb = encodedb + i +":" + binarr[i] + " ";
+      if (binarr[i].length > maxlen ) { maxlen = binarr[i].length ; }
+
       // alert(">>" + words[i] + "<<");
     }
+    var binpadmsg = binpad(binarr,maxlen);
     $('#messagesncoded').val(encoded) ;
     $('#messagesncodedb').val(encodedb) ;
+    $('#messagesncodedp').val(binpadmsg) ;
+    $('#messagesncodedh').val("encodedh") ;
     $('#maxlen').val(maxlen) ;
+    $('#msglen').val(binpadmsg.length) ;
   });
+
+  function binpad(binarr, maxlen) {
+    var binpadresult="";
+    for (var i = 0; i <= binarr.length - 1; i++) {
+      binpadresult = binpadresult + ("0".repeat(maxlen) + binarr[i]).slice(binarr[i].length) ;
+    }
+    return binpadresult;
+  }
 });
 </script>
 <h1>BTC Message Encoding</h2>
 A way to store in the blockchain messages you want to remain safe forever
 <p>
-Message to encode: <textarea rows=3 cols=50 id="messagebox" len=100></textarea>
-<br>
-Encoded Message: <textarea rows=3 cols=50  id="messagesncoded" name="encoded" len=100></textarea>
-<br>
-Encoded Message: <textarea rows=3 cols=50  id="messagesncodedb" name="encoded" len=100></textarea>
-<br>
+Message to encode: <textarea rows=3 cols=80 id="messagebox" len=100></textarea>
+<P>
+Encoded Message: <textarea rows=3 cols=80  id="messagesncoded" name="encoded" len=100></textarea>
+<P>
+Encoded Msg BIN: <textarea rows=3 cols=80  id="messagesncodedb" name="encoded" len=100></textarea>
+<P>
+Padded Msg BIN: <textarea rows=3 cols=80  id="messagesncodedp" name="encoded" len=100></textarea>
+<P>
+Encoded Msg HEX: <textarea rows=3 cols=80  id="messagesncodedh" name="encoded" len=100></textarea>
+<P>
+Msg Length: <input id="msglen" >
+<P>
 Maxlength: <input id="maxlen" >
+
