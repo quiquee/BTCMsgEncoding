@@ -5,7 +5,7 @@
 </head>
 <script type="text/javascript">
 
-var wordsFile = "google-10001-english.txt" ;
+var wordsFile = "google-10000-english.txt" ;
 var payload ;
 var hashObj = new jsSHA("SHA-256","HEX", {numRounds: 2 } );
 $(document).ready(function(){
@@ -46,9 +46,15 @@ $(document).ready(function(){
     hashObj.update(payload.toString(16)) ;
     var checksum =  hashObj.getHash("HEX").toString(16);
     checksum = checksum.substr(checksum.length - 4) ;
-    $('#messagesncodedpa1').val("00" + payload + checksum )  ;
+    // Lets add 2 byte header: 0xDDFL
+    // First byte contains DICTIONARY (0x01 is google-10000-english.txt ): DD
+    // Second byte contains maximum binary length of index  (always < 16 ): L
+    // We leave the first half byte of the second byte for later uses, forced to 0xf: F
+    //
+    var finalMsg = "1".toString(16) + (240+maxlen).toString(16) + payload + checksum ;
+    $('#messagesncodedpa1').val( finalMsg )  ;
 
-    $('#messagesncodedpa2').val(base58.encode(parseInt("00" + payload + checksum,16))) ;
+    $('#messagesncodedpa2').val(base58.encode(parseInt(finalMsg,16))) ;
 
   });
 
